@@ -2,46 +2,93 @@
 using MyPetStoreOnline.Entities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace MyPetStoreOnline
 {
     internal class Program
     {
-        private static List<Product> shopProducts = new List<Product> {
+        private static readonly List<Product> shopProducts = new List<Product> {
                 new Product("Product 1", "The description 1", 9.99m),
                 new Product("Product 2", "The description 2", 19.99m),
                 new Product("Product 3", "The description 3", 19.99m)
             };
 
+        private static readonly ShopService _shopService = new();
+
         private static void Main(string[] args)
         {
-            using var context = new ApplicationContext();
-            var shopService = new ShopService(context);
+            AddProductsIfNeeded();
 
+            var showMenu = true;
+            while (showMenu)
+            {
+                showMenu = MainMenu();
+            }
+        }
+
+        private static bool MainMenu()
+        {
+            Console.Clear();
+            Console.WriteLine("Elige una opción:");
+            Console.WriteLine("1. Registrar cliente");
+            Console.WriteLine("2. Registrar dirección para un cliente");
+            Console.WriteLine("3. Actualizar el teléfono de un cliente");
+            Console.WriteLine("4. Ver productos");
+            Console.WriteLine("5. Ver clientes");
+            Console.WriteLine("6. Salir");
+
+            var showMenu = true;
+            switch (Console.ReadLine())
+            {
+                case "1":
+                    RegisterCustomer();
+                    break;
+                case "2":
+                    ChangeAddressForCustomer();
+                    break;
+                case "3":
+                    break;
+                case "4":
+                    break;
+                case "5":
+                    break;
+                default:
+                    showMenu = false;
+                    break;
+            }
+            Console.ReadLine();
+
+            return showMenu;
+        }
+
+
+        private static void AddProductsIfNeeded()
+        {
             // si no hay productos en la base de datos, agregarlos
-            if (!context.Products.Any())
+            if (!_shopService.HasProduct())
                 foreach (var p in shopProducts)
                 {
-                    shopService.AddProduct(p);
+                    try
+                    {
+                        _shopService.AddProduct(p);
+                        Console.WriteLine($"El producto {p.Id} {p.Name} con precio {p.Price} ha sido agregado");
+                    }catch(Exception ex)
+                    {
+                        Console.WriteLine($"Error: {ex.Message}");
+                    }
                 }
+        }
 
-            Console.WriteLine("Ingresa el nombre del cliente:");
-            var name = Console.ReadLine();
-            Console.WriteLine("Ingresa el apellido del cliente:");
-            var lastName = Console.ReadLine();
-            Console.WriteLine("Ingresa el correo:");
-            var email = Console.ReadLine();
-
-            var customer = new Customer(name, lastName, email);
-            shopService.AddCustomer(customer);
-
+        private static void ChangeAddressForCustomer()
+        {
             Console.WriteLine("Actualizar la dirección para el cliente con nombre:");
             var nameForAddressChange = Console.ReadLine();
 
-            var exists = shopService.IsClientRegistered(nameForAddressChange);
+            var exists = _shopService.IsCustomerRegistered(nameForAddressChange);
 
-            if(exists)
+            if (exists)
             {
                 Console.WriteLine("Calle");
                 var street = Console.ReadLine();
@@ -53,12 +100,49 @@ namespace MyPetStoreOnline
                 var country = Console.ReadLine();
                 Console.WriteLine("Código postal");
                 var pc = Console.ReadLine();
-                var address = new Address(street, state, country, pc, city);
 
-                shopService.AddAddressToCustomer(nameForAddressChange, address);
+                try
+                {
+                    var address = new Address(street, state, country, pc, city);
+                    _shopService.AddAddressToCustomer(nameForAddressChange, address);
+                    Console.WriteLine($"La dirección para el cliente {nameForAddressChange} ha sido agregada");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                }
             }
-           
         }
+
+        private static void RegisterCustomer()
+        {
+            Console.WriteLine("Ingresa el nombre del cliente:");
+            var name = Console.ReadLine();
+            Console.WriteLine("Ingresa el apellido del cliente:");
+            var lastName = Console.ReadLine();
+            Console.WriteLine("Ingresa el correo:");
+            var email = Console.ReadLine();
+
+            try
+            {
+                var customer = new Customer(name, lastName, email);
+                _shopService.AddCustomer(customer);
+                Console.WriteLine($"El cliente {customer.FirstName} {customer.LastName} se registró");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+
+       
+
+
+
+
+
+
+
 
         private static void MyPetStoreInMemoryTests()
         {
