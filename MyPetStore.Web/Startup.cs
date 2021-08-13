@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MyPetStore.Web.Services.Abstractions;
+using MyPetStore.Web.Services.Implementations;
 using MyPetStoreOnline.Data;
 using MyPetStoreOnline.Services.Abstractions;
 using MyPetStoreOnline.Services.Implementations;
@@ -32,6 +34,7 @@ namespace MyPetStore.Web
             services.AddDbContext<ApplicationContext>(c => c.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddTransient<IShopService, ShopService>();
             services.AddTransient<IReportService, ReportService>();
+            services.AddScoped<IFileService, FileService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

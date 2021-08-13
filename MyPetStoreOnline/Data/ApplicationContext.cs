@@ -25,6 +25,7 @@ namespace MyPetStoreOnline.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Customer>().OwnsOne(c => c.Address);
+            modelBuilder.Entity<Product>().Property(c => c.CreatedAt).HasDefaultValueSql("getdate()");
         }
 
 //        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

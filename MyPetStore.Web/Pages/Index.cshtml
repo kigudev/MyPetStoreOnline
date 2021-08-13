@@ -3,46 +3,102 @@
 @{
     ViewData["Title"] = "Home page";
 }
-<div class="d-flex">
+<div class="d-flex justify-content-between">
     <h3 class="product-title">Products</h3>
     <a href="~/products/add" class="btn btn-primary"><i class="fa fa-plus"></i> Add product</a>
 </div>
-@if (!string.IsNullOrEmpty(Model.Errors)) { 
+@if (!string.IsNullOrEmpty(Model.Errors))
+{
     <div class="alert alert-danger">
         @Model.Errors
     </div>
 }
 @if (Model.Products.Any())
 {
-<table class="table" id="myTable">
-    <tr>
-        <th>Id</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th class="text-end">Price</th>
-        <th></th>
-    </tr>
-    @foreach (var product in Model.Products)
-    {
+    <table class="table" id="myTable">
         <tr>
-            <td>@product.Id</td>
-            <td>@product.Name</td>
-            <td>@product.Description</td>
-            <td class="text-end text-success">@product.Price.ToString("C2")</td>
-            <td class="text-end">
-                <div class="d-flex justify-content-end">
-                    <a href="~/products/edit/@product.Id" class="btn btn-secondary btn-sm me-2">Edit</a>
-                    <form method="post">
-                        <button class="btn btn-secondary btn-sm" type="submit" name="ProductId" value="@product.Id">Delete</button>
-                    </form>
-                </div>
-            </td>
+            <th></th>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th class="text-end">Price</th>
+            <th>Created at</th>
+            <th></th>
         </tr>
-    }
-</table>
+        @foreach (var product in Model.Products)
+        {
+
+            <tr>
+                <td>
+                    @if (string.IsNullOrEmpty(product.ImageUrl))
+                    {
+                        <img src="~/images/placeholder.png" width="50" class="img-thumbnail" />
+                    }
+                    else
+                    {
+                        <a href="@product.ImageUrl" target="_blank" class="image-opener" data-bs-toggle="modal" data-bs-target="#imageModal">
+                            <img src="@product.ImageUrl" width="50" class="img-thumbnail" />
+                        </a>
+                    }
+                </td>
+                <td>@product.Id</td>
+                <td>@product.Name</td>
+                <td>@product.Description</td>
+                <td class="text-end text-success">@product.Price.ToString("C2")</td>
+                <td>@product.CreatedAt.ToString("f")</td>
+                <td class="text-end">
+                    <div class="d-flex justify-content-end">
+                        <a href="~/products/edit/@product.Id" class="btn btn-secondary btn-sm me-2">Edit</a>
+                        <form method="post">
+                            <input type="hidden" name="ProductId" value="@product.Id" />
+                            <button class="btn btn-secondary btn-sm btn-delete" type="submit">Delete</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        }
+    </table>
 
 }
 else
 {
     <p class="lead">There's no elements to show</p>
+}
+
+
+<div class="modal" id="imageModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img src="" id="imageContainer" class="img-fluid"/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        //$('.btn-delete').on('click', function (ev) { });
+        $('.btn-delete').click(function (event) {
+            event.preventDefault();
+            var imSure = confirm('Are you sure?');
+
+            if (imSure)
+                $(this).parent('form').submit();
+        });
+
+        $('.image-opener').click(function (ev) {
+            //ev.preventDefault();
+
+            var imageUrl = $(this).prop('href');
+            $('#imageContainer').prop('src', imageUrl);
+        });
+    </script>
 }

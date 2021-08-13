@@ -1,20 +1,25 @@
 ﻿@page
 @model MyPetStore.Web.Pages.Products.AddModel
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     <div class="mb-3">
-        <label asp-for="Product.Name"></label>
-        <input class="form-control" asp-for="Product.Name" />
-        <span asp-validation-for="Product.Name" class="text-danger"></span>
+        <label asp-for="ProductDto.Name"></label>
+        <input class="form-control" asp-for="ProductDto.Name" />
+        <span asp-validation-for="ProductDto.Name" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Product.Description"></label>
-        <textarea class="form-control" asp-for="Product.Description"></textarea>
-        <span asp-validation-for="Product.Description" class="text-danger"></span>
+        <label asp-for="ProductDto.Description"></label>
+        <textarea class="form-control" asp-for="ProductDto.Description"></textarea>
+        <span asp-validation-for="ProductDto.Description" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Product.Price"></label>
-        <input class="form-control" asp-for="Product.Price" />
-        <span asp-validation-for="Product.Price" class="text-danger"></span>
+        <label asp-for="ProductDto.Price"></label>
+        <input class="form-control" asp-for="ProductDto.Price" />
+        <span asp-validation-for="ProductDto.Price" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="ProductDto.Image"></label> <span class="text-muted">(optional)</span>
+        <input class="form-control" asp-for="ProductDto.Image" accept="image/*"/>
+        <span asp-validation-for="ProductDto.Image" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-primary">Send</button>
 </form>

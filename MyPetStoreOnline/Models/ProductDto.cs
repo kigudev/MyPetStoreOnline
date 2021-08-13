@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyPetStoreOnline.Models
 {
@@ -14,5 +15,6 @@ namespace MyPetStoreOnline.Models
         public int Quantity { get; set; }
         [Range(0, 9999)]
         public decimal Price { get; set; }
+        public IFormFile Image { get; set; }
     }
 }

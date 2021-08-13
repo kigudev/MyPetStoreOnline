@@ -14,6 +14,9 @@ namespace MyPetStoreOnline.Entities
         public string Description { get; private set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; private set; }
+        public DateTime CreatedAt { get; private set; }
+        [MaxLength(100)]
+        public string ImageUrl { get; private set; }
 
         public Product()
         {
@@ -45,6 +48,14 @@ namespace MyPetStoreOnline.Entities
                 throw new InvalidOperationException("El precio no puede ser menor a cero");
 
             Price = price;
+        }
+
+        public void AddOrUpdateImage(string url)
+        {
+            if(string.IsNullOrEmpty(url))
+                throw new ArgumentNullException(nameof(url));
+
+            ImageUrl = url;
         }
     }
 }

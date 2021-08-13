@@ -19,6 +19,6 @@ namespace MyPetStoreOnline.Services.Abstractions
         Task<IEnumerable<Customer>> GetCustomersAsync();
         Task DeleteProductAsync(int productId);
         Task<Product> GetProductAsync(int id);
-        Task UpdateProductAsync(int id, string name, string description, decimal price);
+        Task UpdateProductAsync(int id, string name, string description, decimal price,  string imageUrl = null);
     }
 }

@@ -1,12 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using MyPetStore.Web.Services.Abstractions;
 using MyPetStoreOnline.Entities;
 using MyPetStoreOnline.Models;
 using MyPetStoreOnline.Services.Abstractions;
+using System;
+using System.Threading.Tasks;
 
 namespace MyPetStore.Web.Pages.Products
 {
@@ -14,16 +13,22 @@ namespace MyPetStore.Web.Pages.Products
     public class EditModel : PageModel
     {
         private readonly IShopService _shopService;
+        private readonly IFileService _fileService;
 
-        public EditModel(IShopService shopService)
+        public EditModel(IShopService shopService, IFileService fileService)
         {
             _shopService = shopService;
+            _fileService = fileService;
         }
+
         [BindProperty(SupportsGet = true)]
         public int Id { get; set; }
+
         [BindProperty]
         public ProductDto ProductDto { get; set; }
+
         public string Message { get; set; }
+
         public async Task OnGetAsync()
         {
             Product product = await _shopService.GetProductAsync(Id);
@@ -43,11 +48,17 @@ namespace MyPetStore.Web.Pages.Products
             {
                 if (ModelState.IsValid)
                 {
-                    await _shopService.UpdateProductAsync(ProductDto.Id, ProductDto.Name, ProductDto.Description, ProductDto.Price);
+                    var imageUrl = string.Empty;
+                    if (ProductDto.Image != null)
+                    {
+                        imageUrl = await _fileService.SaveImageAsync(ProductDto.Image);
+                    }
+                    await _shopService.UpdateProductAsync(ProductDto.Id, ProductDto.Name, ProductDto.Description, ProductDto.Price, imageUrl);
+
                     Message = "The product was updated successfully";
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
             }

@@ -80,13 +80,17 @@ namespace MyPetStoreOnline.Services.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateProductAsync(int id, string name, string description, decimal price)
+        public async Task UpdateProductAsync(int id, string name, string description, decimal price, string imageUrl)
         {
             var product = await _context.Products.FirstOrDefaultAsync(c => c.Id == id);
             if (product == null)
                 return;
 
             product.Update(name, description, price);
+
+            if (!string.IsNullOrEmpty(imageUrl))
+                product.AddOrUpdateImage(imageUrl);
+
             await _context.SaveChangesAsync();
         }
     }
