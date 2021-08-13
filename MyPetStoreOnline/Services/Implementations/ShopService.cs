@@ -21,16 +21,16 @@ namespace MyPetStoreOnline.Services.Implementations
             _context = context;
         }
 
-        public Task AddProductAsync(Product product)
+        public async Task AddProductAsync(Product product)
         {
-            _context.Add(product);
-            return _context.SaveChangesAsync();
+            await _context.AddAsync(product);
+            await _context.SaveChangesAsync();
         }
 
-        public Task AddCustomerAsync(Customer customer)
+        public async Task AddCustomerAsync(Customer customer)
         {
-            _context.Add(customer);
-            return _context.SaveChangesAsync();
+            await _context.AddAsync(customer);
+            await _context.SaveChangesAsync();
         }
 
         // TODO: recibir customer id de en vez de nombre
@@ -57,7 +57,7 @@ namespace MyPetStoreOnline.Services.Implementations
             return _context.Products.AnyAsync();
         }
 
-        public async Task<IEnumerable<Product>> GetProducts()
+        public async Task<IEnumerable<Product>> GetProductsAsync()
         {
             return await _context.Products.ToListAsync();
         }
@@ -67,17 +67,17 @@ namespace MyPetStoreOnline.Services.Implementations
             return await _context.Products.FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public async Task<IEnumerable<Customer>> GetCustomers()
+        public async Task<IEnumerable<Customer>> GetCustomersAsync()
         {
             return await _context.Customers.ToListAsync();
         }
 
-        public Task DeleteProductAsync(int productId)
+        public async Task DeleteProductAsync(int productId)
         {
-            var product = _context.Products.FirstOrDefaultAsync(c => c.Id == productId);
+            var product = await _context.Products.FirstOrDefaultAsync(c => c.Id == productId);
 
             _context.Remove(product);
-            return _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
         public async Task UpdateProductAsync(int id, string name, string description, decimal price)

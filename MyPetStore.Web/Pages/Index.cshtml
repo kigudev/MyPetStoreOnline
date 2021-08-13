@@ -3,13 +3,18 @@
 @{
     ViewData["Title"] = "Home page";
 }
-<div class="d-flex justify-content-between">
-    <h3>Products</h3>
-    <a href="~/products/add" class="btn btn-primary">Add product</a>
+<div class="d-flex">
+    <h3 class="product-title">Products</h3>
+    <a href="~/products/add" class="btn btn-primary"><i class="fa fa-plus"></i> Add product</a>
 </div>
+@if (!string.IsNullOrEmpty(Model.Errors)) { 
+    <div class="alert alert-danger">
+        @Model.Errors
+    </div>
+}
 @if (Model.Products.Any())
 {
-<table class="table">
+<table class="table" id="myTable">
     <tr>
         <th>Id</th>
         <th>Name</th>
@@ -35,6 +40,7 @@
         </tr>
     }
 </table>
+
 }
 else
 {

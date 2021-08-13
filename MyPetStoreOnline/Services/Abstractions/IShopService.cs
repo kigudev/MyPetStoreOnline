@@ -15,8 +15,8 @@ namespace MyPetStoreOnline.Services.Abstractions
         Task<bool> IsCustomerRegisteredAsync(string name);
 
         Task<bool> HasProductAsync();
-        Task<IEnumerable<Product>> GetProducts();
-        Task<IEnumerable<Customer>> GetCustomers();
+        Task<IEnumerable<Product>> GetProductsAsync();
+        Task<IEnumerable<Customer>> GetCustomersAsync();
         Task DeleteProductAsync(int productId);
         Task<Product> GetProductAsync(int id);
         Task UpdateProductAsync(int id, string name, string description, decimal price);

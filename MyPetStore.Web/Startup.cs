@@ -30,7 +30,6 @@ namespace MyPetStore.Web
             services.AddRazorPages();
 
             services.AddDbContext<ApplicationContext>(c => c.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
             services.AddTransient<IShopService, ShopService>();
             services.AddTransient<IReportService, ReportService>();
         }

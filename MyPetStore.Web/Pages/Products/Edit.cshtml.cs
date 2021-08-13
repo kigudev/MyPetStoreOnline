@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using MyPetStoreOnline.Entities;
 using MyPetStoreOnline.Models;
 using MyPetStoreOnline.Services.Abstractions;
 
 namespace MyPetStore.Web.Pages.Products
 {
+    // Cada vez que se haga una petición se va a volver a instanciar la clase
     public class EditModel : PageModel
     {
         private readonly IShopService _shopService;
@@ -20,12 +22,13 @@ namespace MyPetStore.Web.Pages.Products
         [BindProperty(SupportsGet = true)]
         public int Id { get; set; }
         [BindProperty]
-        public ProductDto Product { get; set; }
+        public ProductDto ProductDto { get; set; }
+        public string Message { get; set; }
         public async Task OnGetAsync()
         {
-            var product = await _shopService.GetProductAsync(Id);
+            Product product = await _shopService.GetProductAsync(Id);
 
-            Product = new ProductDto
+            ProductDto = new ProductDto
             {
                 Id = product.Id,
                 Name = product.Name,
@@ -36,7 +39,18 @@ namespace MyPetStore.Web.Pages.Products
 
         public async Task OnPostAsync()
         {
-            await _shopService.UpdateProductAsync(Product.Id, Product.Name, Product.Description, Product.Price);
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    await _shopService.UpdateProductAsync(ProductDto.Id, ProductDto.Name, ProductDto.Description, ProductDto.Price);
+                    Message = "The product was updated successfully";
+                }
+            }
+            catch(Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+            }
         }
     }
 }

@@ -16,26 +16,31 @@ namespace MyPetStore.Web.Pages
         private readonly ILogger<IndexModel> _logger;
         private readonly IShopService _shopService;
 
-        [BindProperty]
-        public int ProductId { get; set; }
-
         public IndexModel(ILogger<IndexModel> logger, IShopService shopService)
         {
             _logger = logger;
             _shopService = shopService;
         }
 
+        [BindProperty]
+        public int ProductId { get; set; }
+
         public IEnumerable<Product> Products { get; set; }
 
-        public async Task OnGetAsync()
-        {
-            Products = await _shopService.GetProducts();
-        }
+        public string Errors { get; set; }
+
+        public async Task OnGetAsync() => Products = await _shopService.GetProductsAsync();
 
         public async Task OnPostAsync()
         {
-            await _shopService.DeleteProductAsync(ProductId);
-            Products = await _shopService.GetProducts();
+            try
+            {
+                await _shopService.DeleteProductAsync(ProductId);
+            }catch(Exception ex)
+            {
+                Errors = ex.Message;
+            }
+            Products = await _shopService.GetProductsAsync();
         }
     }
 }
