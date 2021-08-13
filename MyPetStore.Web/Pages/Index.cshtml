@@ -1,0 +1,42 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+<div class="d-flex justify-content-between">
+    <h3>Products</h3>
+    <a href="~/products/add" class="btn btn-primary">Add product</a>
+</div>
+@if (Model.Products.Any())
+{
+<table class="table">
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th class="text-end">Price</th>
+        <th></th>
+    </tr>
+    @foreach (var product in Model.Products)
+    {
+        <tr>
+            <td>@product.Id</td>
+            <td>@product.Name</td>
+            <td>@product.Description</td>
+            <td class="text-end text-success">@product.Price.ToString("C2")</td>
+            <td class="text-end">
+                <div class="d-flex justify-content-end">
+                    <a href="~/products/edit/@product.Id" class="btn btn-secondary btn-sm me-2">Edit</a>
+                    <form method="post">
+                        <button class="btn btn-secondary btn-sm" type="submit" name="ProductId" value="@product.Id">Delete</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+    }
+</table>
+}
+else
+{
+    <p class="lead">There's no elements to show</p>
+}
