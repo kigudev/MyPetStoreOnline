@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MyPetStore.Web.Services.Abstractions;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 namespace MyPetStore.Web.Pages.Products
 {
     // Cada vez que se haga una petición se va a volver a instanciar la clase
+    [Authorize(Roles = "Administrator,Manager")]
     public class EditModel : PageModel
     {
         private readonly IShopService _shopService;

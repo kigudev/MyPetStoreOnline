@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using MyPetStore.Web.Services.Abstractions;
 using MyPetStore.Web.Services.Implementations;
 using MyPetStoreOnline.Data;
+using MyPetStoreOnline.Entities;
 using MyPetStoreOnline.Services.Abstractions;
 using MyPetStoreOnline.Services.Implementations;
 using System;
@@ -32,6 +34,23 @@ namespace MyPetStore.Web
             services.AddRazorPages();
 
             services.AddDbContext<ApplicationContext>(c => c.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+               .AddDefaultTokenProviders()
+               .AddEntityFrameworkStores<ApplicationContext>();
+
+            services.Configure<IdentityOptions>(options => {
+                options.SignIn.RequireConfirmedEmail = false;
+
+                // Password settings.
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 3;
+                options.Password.RequiredUniqueChars = 1;
+            });
+
             services.AddTransient<IShopService, ShopService>();
             services.AddTransient<IReportService, ReportService>();
             services.AddScoped<IFileService, FileService>();
@@ -56,6 +75,7 @@ namespace MyPetStore.Web
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

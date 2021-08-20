@@ -141,9 +141,9 @@ namespace MyPetStoreOnline
         private static async Task ChangeAddressForCustomer()
         {
             Console.WriteLine("Actualizar la dirección para el cliente con nombre:");
-            var nameForAddressChange = Console.ReadLine();
+            var idForAddressChange = int.Parse(Console.ReadLine());
 
-            var exists = await _shopService.IsCustomerRegisteredAsync(nameForAddressChange);
+            var exists = await _shopService.IsCustomerRegisteredAsync(idForAddressChange);
 
             if (exists)
             {
@@ -161,8 +161,8 @@ namespace MyPetStoreOnline
                 try
                 {
                     var address = new Address(street, state, country, pc, city);
-                    await _shopService.AddAddressToCustomerAsync(nameForAddressChange, address);
-                    Console.WriteLine($"La dirección para el cliente {nameForAddressChange} ha sido agregada");
+                    await _shopService.AddAddressToCustomerAsync(idForAddressChange, address);
+                    Console.WriteLine($"La dirección para el cliente {idForAddressChange} ha sido agregada");
                 }
                 catch (Exception ex)
                 {

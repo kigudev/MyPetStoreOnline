@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31515.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyPetStoreOnline", "MyPetStoreOnline\MyPetStoreOnline.csproj", "{AB08EDC0-50D9-4273-B777-BF6153D3D667}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyPetStore.Web", "MyPetStore.Web\MyPetStore.Web.csproj", "{16CED0D9-7A78-4654-9E4C-99048B665960}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyPetStore.Web", "MyPetStore.Web\MyPetStore.Web.csproj", "{16CED0D9-7A78-4654-9E4C-99048B665960}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

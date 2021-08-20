@@ -1,29 +1,24 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using MyPetStore.Web.Services.Abstractions;
 using MyPetStoreOnline.Entities;
 using MyPetStoreOnline.Models;
 using MyPetStoreOnline.Services.Abstractions;
 using System;
 using System.Threading.Tasks;
 
-namespace MyPetStore.Web.Pages.Products
+namespace MyPetStore.Web.Pages.Customers
 {
-    [Authorize(Roles = "Administrator,Manager")]
     public class AddModel : PageModel
     {
         private readonly IShopService _shopService;
-        private readonly IFileService _fileService;
 
-        public AddModel(IShopService shopService, IFileService fileService)
+        public AddModel(IShopService shopService)
         {
             _shopService = shopService;
-            _fileService = fileService;
         }
 
         [BindProperty]
-        public ProductDto ProductDto { get; set; }
+        public CustomerDto Input { get; set; }
 
         public void OnGet()
         {
@@ -35,16 +30,10 @@ namespace MyPetStore.Web.Pages.Products
             {
                 try
                 {
-                    var product = new Product(ProductDto.Name, ProductDto.Description, ProductDto.Price);
+                    var customer = new Customer(Input.FirstName, Input.LastName, Input.Email);
 
-                    if (ProductDto.Image != null)
-                    {
-                        var imageUrl = await _fileService.SaveImageAsync(ProductDto.Image);
-                        product.AddOrUpdateImage(imageUrl);
-                    }
-
-                    await _shopService.AddProductAsync(product);
-                    return RedirectToPage("/Index");
+                    await _shopService.AddCustomerAsync(customer);
+                    return RedirectToPage("/Customers");
                 }
                 catch (Exception ex)
                 {

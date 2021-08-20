@@ -10,15 +10,19 @@ namespace MyPetStoreOnline.Services.Abstractions
 
         Task AddCustomerAsync(Customer customer);
 
-        Task AddAddressToCustomerAsync(string name, Address address);
+        Task AddAddressToCustomerAsync(int id, Address address);
 
-        Task<bool> IsCustomerRegisteredAsync(string name);
+        Task<bool> IsCustomerRegisteredAsync(int id);
 
         Task<bool> HasProductAsync();
         Task<IEnumerable<Product>> GetProductsAsync();
         Task<IEnumerable<Customer>> GetCustomersAsync();
+        Task<Customer> GetCustomerAsync(int id);
         Task DeleteProductAsync(int productId);
         Task<Product> GetProductAsync(int id);
         Task UpdateProductAsync(int id, string name, string description, decimal price,  string imageUrl = null);
+        Task DeleteCustomerAsync(int customerId);
+        Task<IEnumerable<Customer>> GetCustomersWithAddressesAsync();
+        Task UpdateCustomerAsync(int id, string firstName, string lastName, string email);
     }
 }

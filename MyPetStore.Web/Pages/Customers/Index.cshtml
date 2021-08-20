@@ -1,0 +1,75 @@
+﻿@page
+@model MyPetStore.Web.Pages.Customers.IndexModel
+@{
+    ViewData["Title"] = "Customers";
+}
+<div class="d-flex justify-content-between">
+    <h3 class="product-title">@ViewData["Title"]</h3>
+    <a href="~/customers/add" class="btn btn-primary"><i class="fa fa-plus"></i> Add customer</a>
+</div>
+@if (!string.IsNullOrEmpty(Model.Errors))
+{
+    <div class="alert alert-danger">
+        @Model.Errors
+    </div>
+}
+@if (Model.Customers.Any())
+{
+    <table class="table" id="myTable">
+        <tr>
+            <th>Id</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Email</th>
+            <th>Address</th>
+            <th></th>
+        </tr>
+        @foreach (var customer in Model.Customers)
+        {
+
+    <tr>
+        <td>@customer.Id</td>
+        <td>@customer.FirstName</td>
+        <td>@customer.LastName</td>
+        <td>@customer.Email</td>
+        <td>
+            @if (customer.Address != null)
+            {
+                @customer.Address.StreetAddress @customer.Address.StateOrProvinceAbbr @customer.Address.City
+                    }
+                    else
+                    {
+                        <span class="text-muted">n/a</span>
+                    }
+        </td>
+        <td class="text-end">
+            <div class="d-flex justify-content-end">
+                <a href="~/customers/edit/@customer.Id" class="btn btn-secondary btn-sm me-2">Edit</a>
+                <form method="post">
+                    <input type="hidden" name="ProductId" value="@customer.Id" />
+                    <button class="btn btn-secondary btn-sm btn-delete" type="submit">Delete</button>
+                </form>
+            </div>
+        </td>
+    </tr>
+        }
+    </table>
+
+}
+else
+{
+    <p class="lead">There's no elements to show</p>
+}
+
+@section Scripts{
+    <script>
+        //$('.btn-delete').on('click', function (ev) { });
+        $('.btn-delete').click(function (event) {
+            event.preventDefault();
+            var imSure = confirm('Are you sure?');
+
+            if (imSure)
+                $(this).parent('form').submit();
+        });
+    </script>
+}

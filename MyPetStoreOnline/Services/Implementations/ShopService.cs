@@ -33,10 +33,9 @@ namespace MyPetStoreOnline.Services.Implementations
             await _context.SaveChangesAsync();
         }
 
-        // TODO: recibir customer id de en vez de nombre
-        public async Task AddAddressToCustomerAsync(string name, Address address)
+        public async Task AddAddressToCustomerAsync(int id, Address address)
         {
-            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.FirstName == name);
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Id == id);
 
             if (customer == null)
             {
@@ -47,9 +46,9 @@ namespace MyPetStoreOnline.Services.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public Task<bool> IsCustomerRegisteredAsync(string name)
+        public Task<bool> IsCustomerRegisteredAsync(int id)
         {
-            return _context.Customers.AnyAsync(c => c.FirstName == name);
+            return _context.Customers.AnyAsync(c => c.Id == id);
         }
 
         public Task<bool> HasProductAsync()
@@ -72,6 +71,16 @@ namespace MyPetStoreOnline.Services.Implementations
             return await _context.Customers.ToListAsync();
         }
 
+        public async Task<Customer> GetCustomerAsync(int id)
+        {
+            return await _context.Customers.FirstOrDefaultAsync(c => c.Id == id);
+        }
+
+        public async Task<IEnumerable<Customer>> GetCustomersWithAddressesAsync()
+        {
+            return await _context.Customers.Include(c => c.Address).ToListAsync();
+        }
+
         public async Task DeleteProductAsync(int productId)
         {
             var product = await _context.Products.FirstOrDefaultAsync(c => c.Id == productId);
@@ -79,6 +88,15 @@ namespace MyPetStoreOnline.Services.Implementations
             _context.Remove(product);
             await _context.SaveChangesAsync();
         }
+
+        public async Task DeleteCustomerAsync(int customerId)
+        {
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Id == customerId);
+
+            _context.Remove(customer);
+            await _context.SaveChangesAsync();
+        }
+
 
         public async Task UpdateProductAsync(int id, string name, string description, decimal price, string imageUrl)
         {
@@ -90,6 +108,17 @@ namespace MyPetStoreOnline.Services.Implementations
 
             if (!string.IsNullOrEmpty(imageUrl))
                 product.AddOrUpdateImage(imageUrl);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateCustomerAsync(int id, string firstName, string lastName, string email)
+        {
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Id == id);
+            if (customer == null)
+                return;
+
+            customer.Update(firstName, lastName, email);
 
             await _context.SaveChangesAsync();
         }

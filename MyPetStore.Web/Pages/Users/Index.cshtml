@@ -1,0 +1,65 @@
+﻿@page
+@model MyPetStore.Web.Pages.Users.IndexModel
+@{
+    ViewData["Title"] = "Users";
+}
+<div class="d-flex justify-content-between">
+    <h3 class="product-title">@ViewData["Title"]</h3>
+</div>
+@if (!string.IsNullOrEmpty(Model.Errors))
+{
+    <div class="alert alert-danger">
+        @Model.Errors
+    </div>
+}
+@if (Model.Users.Any())
+{
+    <table class="table" id="myTable">
+        <tr>
+            <th>Id</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Email</th>
+            <th></th>
+        </tr>
+        @foreach (var user in Model.Users)
+        {
+
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.FirstName</td>
+                <td>@user.LastName</td>
+                <td>@user.Email</td>
+                <td>
+
+                </td>
+                <td class="text-end">
+                    <div class="d-flex justify-content-end">
+                        <form method="post">
+                            <input type="hidden" name="Id" value="@user.Id" />
+                            <button class="btn btn-secondary btn-sm btn-delete" type="submit">Delete</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        }
+    </table>
+
+}
+else
+{
+    <p class="lead">There's no elements to show</p>
+}
+
+@section Scripts{
+    <script>
+        //$('.btn-delete').on('click', function (ev) { });
+        $('.btn-delete').click(function (event) {
+            event.preventDefault();
+            var imSure = confirm('Are you sure?');
+
+            if (imSure)
+                $(this).parent('form').submit();
+        });
+    </script>
+}

@@ -1,17 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MyPetStoreOnline.Entities;
 using System;
 
 namespace MyPetStoreOnline.Data
 {
-    public class ApplicationContext : DbContext
+    public class ApplicationContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
 
         }
 
+        // Solo se usa si tienen el proyecto de consola también funcionando
         public ApplicationContext()
         {
 
@@ -24,6 +26,7 @@ namespace MyPetStoreOnline.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Customer>().OwnsOne(c => c.Address);
             modelBuilder.Entity<Product>().Property(c => c.CreatedAt).HasDefaultValueSql("getdate()");
         }
