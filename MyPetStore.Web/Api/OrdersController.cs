@@ -21,9 +21,28 @@ namespace MyPetStore.Web.Api
             _shopService = shopService;
         }
 
+        /// <summary>
+        /// Obtiene todas las ordenes de la tienda
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public Task<IEnumerable<Order>> Get() => _shopService.GetOrdersAsync();
 
+        /// <summary>
+        /// Agrega un producto a una orden.
+        /// Si la orden no existe la crea.
+        /// Si el producto ya existe en la orden actualiza la cantidad.
+        /// </summary>
+        /// <remarks>
+        ///  POST /Orders
+        ///  {
+        ///     ProductId: [el id válido de un producto]
+        ///     Quantity: [cantidad solo en positivo]
+        ///     CustomerId: [el id del cliente]
+        ///  }
+        /// </remarks>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult AddProduct(ProductOrderRequest request)
         {
@@ -42,6 +61,11 @@ namespace MyPetStore.Web.Api
             }
         }
 
+        /// <summary>
+        /// Completa la unica orden abierta de un cliente
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <returns></returns>
         [HttpPut("Complete")]
         // complete?customerId=3
         public async Task<IActionResult> Complete([FromBody]int customerId)

@@ -15,7 +15,9 @@ using MyPetStoreOnline.Services.Abstractions;
 using MyPetStoreOnline.Services.Implementations;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace MyPetStore.Web
@@ -61,9 +63,33 @@ namespace MyPetStore.Web
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
             });
 
+
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyPetStore", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { 
+                    Title = "MyPetStore", 
+                    Version = "v1",
+                    Description = "El Api de mi tienda de mascotas en línea",
+                    TermsOfService = new Uri("https://google.com/terms"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Twitter",
+                        Email = string.Empty,
+                        Url = new Uri("https://twitter.com/mypetstore")
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "Use under creative commons",
+                        Url = new Uri("https://github.com/mypetsore/licence")
+                    }
+                });
+
+                // Accede al archivo de xml donde se guarda la documentación de nuestros métodos.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                // Une nombre del archivo con el path absoluto donde está alojado nuestro sistema.
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
+                c.IncludeXmlComments(xmlPath);
             });
 
             services.AddTransient<IShopService, ShopService>();
@@ -77,8 +103,14 @@ namespace MyPetStore.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyPetStore v1"));
+                app.UseSwaggerUI(c =>
+               {
+                   c.InjectStylesheet("/swagger-ui/custom.css");
+                   c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyPetStore v1");
+               }
+                );
             }
             else
             {
