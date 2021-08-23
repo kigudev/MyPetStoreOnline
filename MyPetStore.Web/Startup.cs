@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using MyPetStore.Web.Services.Abstractions;
 using MyPetStore.Web.Services.Implementations;
 using MyPetStoreOnline.Data;
@@ -32,6 +33,7 @@ namespace MyPetStore.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
+            services.AddControllersWithViews();
 
             services.AddDbContext<ApplicationContext>(c => c.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -51,6 +53,19 @@ namespace MyPetStore.Web
                 options.Password.RequiredUniqueChars = 1;
             });
 
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+                options.LoginPath = "/Identity/Account/Login";
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+            });
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyPetStore", Version = "v1" });
+            });
+
             services.AddTransient<IShopService, ShopService>();
             services.AddTransient<IReportService, ReportService>();
             services.AddScoped<IFileService, FileService>();
@@ -62,6 +77,8 @@ namespace MyPetStore.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyPetStore v1"));
             }
             else
             {
@@ -81,6 +98,7 @@ namespace MyPetStore.Web
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
+                endpoints.MapDefaultControllerRoute();
             });
         }
     }

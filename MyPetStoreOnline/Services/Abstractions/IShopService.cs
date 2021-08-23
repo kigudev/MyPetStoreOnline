@@ -17,12 +17,17 @@ namespace MyPetStoreOnline.Services.Abstractions
         Task<bool> HasProductAsync();
         Task<IEnumerable<Product>> GetProductsAsync();
         Task<IEnumerable<Customer>> GetCustomersAsync();
+        Task<IEnumerable<Order>> GetOrdersAsync();
         Task<Customer> GetCustomerAsync(int id);
         Task DeleteProductAsync(int productId);
+        Task AddUpdateAddressAsync(int id, Address address);
         Task<Product> GetProductAsync(int id);
         Task UpdateProductAsync(int id, string name, string description, decimal price,  string imageUrl = null);
         Task DeleteCustomerAsync(int customerId);
         Task<IEnumerable<Customer>> GetCustomersWithAddressesAsync();
         Task UpdateCustomerAsync(int id, string firstName, string lastName, string email);
+        Task AddProductToOrderAsync(int customerId, int productId, int quantity);
+        Task CompleteOrderAsync(int customerId);
+        Task DeleteOrderAsync(int id);
     }
 }

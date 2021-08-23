@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyPetStoreOnline.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,6 +12,7 @@ namespace MyPetStoreOnline.Entities
         public DateTime? OrderFulfilled { get; private set; }
         public int CustomerId { get; private set; }
         public Customer Customer { get; private set; }
+        public OrderStatus Status { get; private set; }
         public ICollection<ProductOrder> ProductOrders { get; private set; }
 
         Order()
@@ -74,6 +76,15 @@ namespace MyPetStoreOnline.Entities
                 throw new InvalidOperationException("Esta orden ya habia sido completada");
 
             OrderFulfilled = DateTime.Now;
+            Status = OrderStatus.Completed;
+        }
+
+        public void ChangeStatus(OrderStatus status)
+        {
+            if(status == OrderStatus.Completed)
+                throw new InvalidOperationException("Utiliza el método Complete para finalizar una orden");
+
+            Status = status;
         }
 
         // Actualizar la cantidad de un producto en la orden

@@ -122,5 +122,62 @@ namespace MyPetStoreOnline.Services.Implementations
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<Order>> GetOrdersAsync()
+        {
+            return await _context.Orders.Include(c => c.Customer).Include(c => c.ProductOrders).ToListAsync();
+        }
+
+        public async Task AddProductToOrderAsync(int customerId, int productId, int quantity)
+        {
+            var order = await _context.Orders
+                .Include(c => c.ProductOrders)
+                .FirstOrDefaultAsync(c => c.CustomerId == customerId && !c.OrderFulfilled.HasValue);
+
+            if (order == null)
+            {
+                order = new Order(customerId, productId, quantity);
+            }
+            else if(order.ProductOrders.Any(c => c.ProductId == productId))
+            {
+                order.ProductOrders.First(c => c.ProductId == productId).Quantity = quantity;
+            }else
+            {
+                order.AddProduct(productId, quantity);
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task CompleteOrderAsync(int customerId)
+        {
+            var order = await _context.Orders
+               .FirstOrDefaultAsync(c => c.CustomerId == customerId && !c.OrderFulfilled.HasValue);
+
+            if (order != null)
+            {
+                order.Complete();
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task DeleteOrderAsync(int id)
+        {
+            var order = await _context.Orders.FirstOrDefaultAsync(c => c.Id == id);
+
+            _context.Remove(order);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddUpdateAddressAsync(int customerId, Address address)
+        {
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Id == customerId);
+
+            if (customer == null)
+                return;
+
+            customer.Address = address;
+            await _context.SaveChangesAsync();
+        }
     }
 }
