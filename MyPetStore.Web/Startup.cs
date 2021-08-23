@@ -63,7 +63,10 @@ namespace MyPetStore.Web
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
             });
 
-
+            // open api - estandar de lectura de APIs
+            // swagger - librería agnostica al lenguaje de programación
+            // swashbunkle - librería swagger en .net
+            // nswag - librería swagger en .net
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { 
@@ -106,10 +109,10 @@ namespace MyPetStore.Web
 
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
-               {
-                   c.InjectStylesheet("/swagger-ui/custom.css");
-                   c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyPetStore v1");
-               }
+                   {
+                       c.InjectStylesheet("/swagger-ui/custom.css");
+                       c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyPetStore v1");
+                   }
                 );
             }
             else
