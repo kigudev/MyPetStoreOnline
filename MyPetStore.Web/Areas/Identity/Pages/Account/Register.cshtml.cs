@@ -36,6 +36,8 @@ namespace ASPNETIdentity.Areas.Identity.Pages.MyAccount
             {
                 var user = new ApplicationUser
                 {
+                    FirstName = Input.FirstName,
+                    LastName = Input.LastName,
                     UserName = Input.Email,
                     Email = Input.Email
                 };
@@ -74,6 +76,10 @@ namespace ASPNETIdentity.Areas.Identity.Pages.MyAccount
 
         public class InputModel
         {
+            [Required]
+            public string FirstName { get; set; }
+            [Required]
+            public string LastName { get; set; }
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]

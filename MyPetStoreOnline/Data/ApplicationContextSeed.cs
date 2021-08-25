@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using MyPetStoreOnline.Entities;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MyPetStoreOnline.Data
@@ -58,6 +60,44 @@ namespace MyPetStoreOnline.Data
                 if (result.Succeeded)
                     await userManager.AddToRoleAsync(manager, Role.Manager.ToString());
             }
+        }
+
+        public static async Task SeedAsync(ApplicationContext context)
+        {
+            if (!context.ProductBrands.Any())
+            {
+                await context.ProductBrands.AddRangeAsync(
+                    new List<ProductBrand>
+                    {
+                        new ProductBrand{ Name = "My Doggy"},
+                        new ProductBrand{ Name = "Purina"},
+                        new ProductBrand{ Name = "Kirkland"},
+                        new ProductBrand{ Name = "DogChow"},
+                        new ProductBrand{ Name = "CatChow"},
+                        new ProductBrand{ Name = "Pedigree"},
+                        new ProductBrand{ Name = "Whiskas"},
+                    }
+                );
+
+                await context.SaveChangesAsync();
+            }
+
+            if (!context.ProductTypes.Any())
+            {
+                await context.ProductTypes.AddRangeAsync(
+                    new List<ProductType>
+                    {
+                        new ProductType{ Name = "Food"},
+                        new ProductType{ Name = "Accesories"},
+                        new ProductType{ Name = "Clothes"},
+                        new ProductType{ Name = "Cleaning"},
+                        new ProductType{ Name = "Furniture"}
+                    }
+                );
+
+                await context.SaveChangesAsync();
+            }
+
         }
     }
 }

@@ -29,5 +29,8 @@ namespace MyPetStoreOnline.Services.Abstractions
         Task AddProductToOrderAsync(int customerId, int productId, int quantity);
         Task CompleteOrderAsync(int customerId);
         Task DeleteOrderAsync(int id);
+
+        Task<IEnumerable<ProductBrand>> GetProductBrandsAsync();
+        Task<IEnumerable<ProductType>> GetProductTypesAsync();
     }
 }

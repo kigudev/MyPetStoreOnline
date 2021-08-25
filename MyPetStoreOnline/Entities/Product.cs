@@ -18,6 +18,12 @@ namespace MyPetStoreOnline.Entities
         [MaxLength(100)]
         public string ImageUrl { get; private set; }
 
+        public int? ProductBrandId { get; private set; }
+        public ProductBrand Brand { get; private set; }
+        public int? ProductTypeId { get; private set; }
+        public ProductType Type { get; private set; }
+
+
         public Product()
         {
             // Usado por EF
@@ -39,6 +45,8 @@ namespace MyPetStoreOnline.Entities
             Price = price;
         }
 
+
+
         public void Update(string name, string description, decimal price)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
@@ -56,6 +64,12 @@ namespace MyPetStoreOnline.Entities
                 throw new ArgumentNullException(nameof(url));
 
             ImageUrl = url;
+        }
+
+        public void AddOrUpdateTypeAndBrand(int typeId, int brandId)
+        {
+            ProductTypeId = typeId;
+            ProductBrandId = brandId;
         }
     }
 }

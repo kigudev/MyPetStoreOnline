@@ -20,8 +20,10 @@ namespace MyPetStore.Web
 
                 var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                var context = services.GetRequiredService<ApplicationContext>();
 
                 await ApplicationContextSeed.SeedIdentityAsync(userManager, roleManager);
+                await ApplicationContextSeed.SeedAsync(context);
             }
 
             host.Run();

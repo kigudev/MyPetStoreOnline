@@ -179,5 +179,15 @@ namespace MyPetStoreOnline.Services.Implementations
             customer.Address = address;
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<ProductBrand>> GetProductBrandsAsync()
+        {
+            return await _context.ProductBrands.ToListAsync();
+        }
+
+        public async Task<IEnumerable<ProductType>> GetProductTypesAsync()
+        {
+            return await _context.ProductTypes.ToListAsync();
+        }
     }
 }
