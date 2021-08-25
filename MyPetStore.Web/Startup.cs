@@ -105,6 +105,7 @@ namespace MyPetStore.Web
         {
             if (env.IsDevelopment())
             {
+                app.UseWebAssemblyDebugging();
                 app.UseDeveloperExceptionPage();
 
                 app.UseSwagger();
@@ -123,6 +124,7 @@ namespace MyPetStore.Web
             }
 
             app.UseHttpsRedirection();
+            app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -134,6 +136,7 @@ namespace MyPetStore.Web
             {
                 endpoints.MapRazorPages();
                 endpoints.MapDefaultControllerRoute();
+                endpoints.MapFallbackToFile("index.html");
             });
         }
     }

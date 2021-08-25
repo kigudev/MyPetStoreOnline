@@ -1,0 +1,33 @@
+﻿@page "/"
+@inject IProductApi ProductApi 
+
+<div class="row">
+    @foreach (var product in products)
+    {
+    <div class="col-12 col-md-4 col-xl-3">
+        <a href="/details/@product.Id" class="card-product">
+            <div class="text-center">
+                @if (string.IsNullOrEmpty(product.ImageUrl))
+                {
+                    <img src="/images/placeholder.png" width="100" class="img-thumbnail" />
+                }
+                else
+                {
+                    <img src="@product.ImageUrl" width="100" class="img-thumbnail" />
+                }
+            </div>
+            <div><b>@product.Name</b></div>
+            <div class="lead">@product.Price</div>
+        </a>
+    </div>
+    }
+</div>
+
+@code{
+    private List<ProductDto> products = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await ProductApi.GetAllAsync();
+    }
+}

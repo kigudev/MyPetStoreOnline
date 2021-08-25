@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MyPetStore.Shared;
 using MyPetStoreOnline.Entities;
 using MyPetStoreOnline.Services.Abstractions;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MyPetStore.Web.Api
@@ -21,7 +20,24 @@ namespace MyPetStore.Web.Api
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Product>> Get(string search, string order) {
+        public async Task<IEnumerable<ProductDto>> Get()
+        {
+            var products = await _shopService.GetProductsAsync();
+
+            var model = products.Select(c => new ProductDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Price = c.Price,
+                ImageUrl = c.ImageUrl
+            });
+
+            return model;
+        }
+
+        [HttpGet("filter")]
+        public async Task<IEnumerable<Product>> Get(string search, string order)
+        {
             var products = await _shopService.GetProductsAsync();
 
             if (!string.IsNullOrEmpty(search))
@@ -31,12 +47,10 @@ namespace MyPetStore.Web.Api
 
             if (!string.IsNullOrEmpty(order))
             {
-
                 products = order == "desc" ? products.OrderByDescending(c => c.Name) : products.OrderBy(c => c.Name);
             }
 
             return products;
         }
-
     }
 }
