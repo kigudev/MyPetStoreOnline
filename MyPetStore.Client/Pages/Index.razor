@@ -1,33 +1,113 @@
 ﻿@page "/"
-@inject IProductApi ProductApi 
+@implements IDisposable
+@inject IProductApi ProductApi
+@inject NavigationManager NavigationManager
+<BrandsBar></BrandsBar>
 
-<div class="row">
-    @foreach (var product in products)
-    {
-    <div class="col-12 col-md-4 col-xl-3">
-        <a href="/details/@product.Id" class="card-product">
-            <div class="text-center">
-                @if (string.IsNullOrEmpty(product.ImageUrl))
-                {
-                    <img src="/images/placeholder.png" width="100" class="img-thumbnail" />
-                }
-                else
-                {
-                    <img src="@product.ImageUrl" width="100" class="img-thumbnail" />
-                }
-            </div>
-            <div><b>@product.Name</b></div>
-            <div class="lead">@product.Price</div>
-        </a>
+<div class="container">
+    <div class="my-3 d-flex justify-content-between">
+        <div>
+            @if (!string.IsNullOrEmpty(search))
+            {
+                <span>Se encontraron @products.Count productos con el término <b class="text-warning">"@search"</b></span>
+            }
+            else
+            {
+                <span>Se encontraron @products.Count productos</span>
+            }
+        </div>
+        <div>
+            <select class="form-control" @onchange="async (val) => await OrderProducts(val)">
+                <option value="asc">Order by name asc</option>
+                <option value="desc">Order by name desc</option>
+            </select>
+        </div>
     </div>
+    @if (isBusy)
+    {
+        <div class="text-center lead mt-5 text-primary">
+            Cargando...
+        </div>
+    }
+    else if (!products.Any())
+    {
+        <div class="text-center lead mt-5 text-muted">
+            No se encontraron resultados
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var product in products)
+            {
+                <div class="col-12 col-md-4 col-xl-3">
+                    <a href="/details/@product.Id" class="card-product">
+                        <div class="text-center">
+                            @if (string.IsNullOrEmpty(product.ImageUrl))
+                            {
+                                <img src="/images/placeholder.png" width="100" class="img-thumbnail" />
+                            }
+                            else
+                            {
+                                <img src="@product.ImageUrl" width="100" class="img-thumbnail" />
+                            }
+                        </div>
+                        <div><b>@product.Name</b></div>
+                        <div class="lead">@product.Price</div>
+                    </a>
+                </div>
+            }
+        </div>
     }
 </div>
-
 @code{
+    private string search;
+    private string brand;
+    private bool isBusy;
+    private string order;
+
     private List<ProductDto> products = new();
 
     protected override async Task OnInitializedAsync()
     {
-        products = await ProductApi.GetAllAsync();
+        await CallProductApi(NavigationManager.QueryString("search"), NavigationManager.QueryString("brand"));
+        NavigationManager.LocationChanged += async (sender, e) => await LocationChanged(sender, e);
+        // si fuera blazor server podriamos solamente inyectar IShopService
+        //products = await ShopService.GetProductsAsync();
+    }
+
+    // anclamos un evento de cambio en la dirección de la url al NavigationManager
+    async Task LocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        await CallProductApi(ExtensionMethods.QueryString(e.Location, "search"), ExtensionMethods.QueryString(e.Location, "brand"));
+        // necesario si queremos ver el valor de brand en la UI
+
+    }
+
+    // Como esta operación se repite lo extrajimos a su propio método
+    async Task CallProductApi(string search, string brand)
+    {
+        isBusy = true;
+        StateHasChanged();
+        this.search = search;
+        this.brand = brand;
+        products = await ProductApi.GetAllAsync(search, brand);
+        await Task.Delay(1000); // para alcanzar a ver el texto de cargando
+        isBusy = false;
+        StateHasChanged();
+    }
+
+    async Task OrderProducts(ChangeEventArgs args)
+    {
+        this.order = (string) args.Value;
+        isBusy = true;
+        products = await ProductApi.GetAllAsync(search, brand, order);
+        isBusy = false;
+    }
+
+    void IDisposable.Dispose()
+    {
+        // Unsubscribe from the event when our component is disposed
+        NavigationManager.LocationChanged -= async (sender, e) => await LocationChanged(sender, e);
     }
 }

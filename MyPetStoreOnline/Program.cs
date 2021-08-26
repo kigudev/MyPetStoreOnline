@@ -21,9 +21,9 @@ namespace MyPetStoreOnline
 
         private static async Task Main(string[] args)
         {
-            var context = new ApplicationContext();
-            _shopService = new ShopService(context);
-            _reportService = new ReportService(context);
+            //var context = new ApplicationContext();
+            //_shopService = new ShopService(context);
+            //_reportService = new ReportService(context);
 
             await AddProductsIfNeededAsync();
 

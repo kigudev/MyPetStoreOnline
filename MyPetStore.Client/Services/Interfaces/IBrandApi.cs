@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace MyPetStore.Client.Services.Interfaces
 {
-    public interface IProductApi
+    public interface IBrandApi
     {
-        Task<List<ProductDto>> GetAllAsync(string search, string brand, string order = "asc");
+        Task<List<BrandDto>> GetAllAsync();
     }
 }

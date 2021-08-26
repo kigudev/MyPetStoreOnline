@@ -1,0 +1,41 @@
+﻿@inject IBrandApi BrandApi
+@*Mostrar icono de cargando*@
+@*Mostrar marcas*@
+@*Al seleccionar una marca filtrar los productos por esa marca (cambio a url)*@
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            @if (brands == null)
+            {
+                <span>Loading...</span>
+            }
+            else
+            {
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/">All brands</a>
+            </li>
+            @foreach (var b in brands)
+            {
+                <li class="nav-item">
+                    <a class="nav-link" href="/?brand=@b.Id">@b.Name</a>
+                </li>
+            }
+        </ul>
+            }
+        </div>
+    </div>
+</nav>
+
+@code {
+    private List<BrandDto> brands;
+
+    protected override async Task OnInitializedAsync()
+    {
+        brands = await BrandApi.GetAllAsync();
+    }
+}

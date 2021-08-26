@@ -1,23 +1,24 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using IdentityServer4.EntityFramework.Options;
+using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MyPetStoreOnline.Entities;
-using System;
 
 namespace MyPetStoreOnline.Data
 {
-    public class ApplicationContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationContext : ApiAuthorizationDbContext<ApplicationUser>
     {
-        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
+        public ApplicationContext(
+            DbContextOptions<ApplicationContext> options,
+            IOptions<OperationalStoreOptions> operationalStoreOptions
+            ) : base(options, operationalStoreOptions)
         {
-
         }
 
         // Solo se usa si tienen el proyecto de consola también funcionando
-        public ApplicationContext()
-        {
-
-        }
+        //public ApplicationContext()
+        //{
+        //}
 
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Order> Orders { get; set; }
@@ -33,13 +34,13 @@ namespace MyPetStoreOnline.Data
             modelBuilder.Entity<Product>().Property(c => c.CreatedAt).HasDefaultValueSql("getdate()");
         }
 
-//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//        {
-//            optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=MyPetStoreOnlineDb;Integrated Security=True");
+        //        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //        {
+        //            optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=MyPetStoreOnlineDb;Integrated Security=True");
 
-//#if DEBUG
-//            optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information);
-//#endif
-//        }
+        //#if DEBUG
+        //            optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information);
+        //#endif
+        //        }
     }
 }

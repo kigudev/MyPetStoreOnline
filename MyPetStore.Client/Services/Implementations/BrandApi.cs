@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace MyPetStore.Client.Services.Implementations
 {
-    public class ProductApi : IProductApi
+    public class BrandApi : IBrandApi
     {
         private readonly HttpClient _client;
 
-        public ProductApi(HttpClient client)
+        public BrandApi(HttpClient client)
         {
             _client = client;
         }
 
-        public Task<List<ProductDto>> GetAllAsync(string search, string brand, string order)
+        public async Task<List<BrandDto>> GetAllAsync()
         {
-            return _client.GetFromJsonAsync<List<ProductDto>>($"api/products?search={search}&brand={brand}&order={order}");
+            return await _client.GetFromJsonAsync<List<BrandDto>>("api/brands");
         }
     }
 }

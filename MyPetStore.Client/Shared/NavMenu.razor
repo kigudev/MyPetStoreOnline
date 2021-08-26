@@ -1,11 +1,15 @@
-﻿<nav class="navbar navbar-expand-lg navbar-light bg-light">
+﻿<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
         <a class="navbar-brand" href="/">My Pet Store</a>     
         <div class="collapse navbar-collapse" id="navbarSupportedContent">         
-            <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-secondary" type="submit">Search</button>
-            </form>
+            <div class="d-flex">
+                <input class="form-control me-2" type="search" @bind="search">
+                <a href="/?search=@search" class="btn btn-secondary">Search</a>
+            </div>
         </div>
     </div>
 </nav>
+
+@code{
+    private string search;
+}
