@@ -73,33 +73,34 @@ namespace MyPetStore.Web
             // swagger - librería agnostica al lenguaje de programación
             // swashbunkle - librería swagger en .net
             // nswag - librería swagger en .net
-            //services.AddSwaggerGen(c =>
-            //{
-            //    c.SwaggerDoc("v1", new OpenApiInfo { 
-            //        Title = "MyPetStore", 
-            //        Version = "v1",
-            //        Description = "El Api de mi tienda de mascotas en línea",
-            //        TermsOfService = new Uri("https://google.com/terms"),
-            //        Contact = new OpenApiContact
-            //        {
-            //            Name = "Twitter",
-            //            Email = string.Empty,
-            //            Url = new Uri("https://twitter.com/mypetstore")
-            //        },
-            //        License = new OpenApiLicense
-            //        {
-            //            Name = "Use under creative commons",
-            //            Url = new Uri("https://github.com/mypetsore/licence")
-            //        }
-            //    });
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "MyPetStore",
+                    Version = "v1",
+                    Description = "El Api de mi tienda de mascotas en línea",
+                    TermsOfService = new Uri("https://google.com/terms"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Twitter",
+                        Email = string.Empty,
+                        Url = new Uri("https://twitter.com/mypetstore")
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "Use under creative commons",
+                        Url = new Uri("https://github.com/mypetsore/licence")
+                    }
+                });
 
-            //    // Accede al archivo de xml donde se guarda la documentación de nuestros métodos.
-            //    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            //    // Une nombre del archivo con el path absoluto donde está alojado nuestro sistema.
-            //    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                // Accede al archivo de xml donde se guarda la documentación de nuestros métodos.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                // Une nombre del archivo con el path absoluto donde está alojado nuestro sistema.
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 
-            //    c.IncludeXmlComments(xmlPath);
-            //});
+                c.IncludeXmlComments(xmlPath);
+            });
 
             services.AddTransient<IShopService, ShopService>();
             services.AddTransient<IReportService, ReportService>();

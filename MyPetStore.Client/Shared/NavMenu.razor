@@ -1,11 +1,12 @@
 ﻿<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
         <a class="navbar-brand" href="/">My Pet Store</a>     
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">         
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <div class="d-flex">
                 <input class="form-control me-2" type="search" @bind="search">
                 <a href="/?search=@search" class="btn btn-secondary">Search</a>
             </div>
+            <LoginDisplay></LoginDisplay>
         </div>
     </div>
 </nav>

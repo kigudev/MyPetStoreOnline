@@ -25,12 +25,13 @@ namespace MyPetStoreOnline.Entities
         public Address Address { get; set; }
 
         public ICollection<Order> Orders { get; private set; }
-
         public Customer()
         {
             // Usado por EF
         }
 
+
+        // TODO: pedir el userId y delegar el nombre, correo y telefono a la cuenta de usuario
         public Customer(string firstName, string lastName, string email)
         {
             if (string.IsNullOrEmpty(firstName))

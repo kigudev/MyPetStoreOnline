@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using MyPetStore.Shared;
 using MyPetStore.Web.Models;
 using MyPetStoreOnline.Entities;
 using MyPetStoreOnline.Services.Abstractions;
@@ -10,15 +13,18 @@ using System.Threading.Tasks;
 
 namespace MyPetStore.Web.Api
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class OrdersController: ControllerBase
     {
         private readonly IShopService _shopService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public OrdersController(IShopService shopService)
+        public OrdersController(IShopService shopService, UserManager<ApplicationUser> userManager)
         {
             _shopService = shopService;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -44,16 +50,22 @@ namespace MyPetStore.Web.Api
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult AddProduct(ProductOrderRequest request)
+        public async Task<IActionResult> AddProduct(ProductOrderRequest request)
         {
-            var product = _shopService.GetProductAsync(request.ProductId);
+            //var user = await _userManager.FindByEmailAsync(User.Identity.Name);
+            var user = await _userManager.GetUserAsync(User);
+
+            if (!user.CustomerId.HasValue)
+                return BadRequest("The customer doesn't exist");
+
+            var product = await _shopService.GetProductAsync(request.ProductId);
 
             if (product == null)
                 return NotFound();
 
             try
             {
-                _shopService.AddProductToOrderAsync(request.CustomerId, request.ProductId, request.Quantity);
+                await _shopService.AddProductToOrderAsync(user.CustomerId.Value, request.ProductId, request.Quantity);
                 return NoContent();
             }catch(Exception ex)
             {

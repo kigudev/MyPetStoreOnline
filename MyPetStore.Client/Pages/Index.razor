@@ -1,6 +1,7 @@
 ﻿@page "/"
 @implements IDisposable
 @inject IProductApi ProductApi
+@inject IOrderApi OrderApi
 @inject NavigationManager NavigationManager
 <BrandsBar></BrandsBar>
 
@@ -23,6 +24,7 @@
             </select>
         </div>
     </div>
+    <div>@message</div>
     @if (isBusy)
     {
         <div class="text-center lead mt-5 text-primary">
@@ -41,7 +43,7 @@
             @foreach (var product in products)
             {
                 <div class="col-12 col-md-4 col-xl-3">
-                    <a href="/details/@product.Id" class="card-product">
+                    <div class="card-product">
                         <div class="text-center">
                             @if (string.IsNullOrEmpty(product.ImageUrl))
                             {
@@ -54,7 +56,10 @@
                         </div>
                         <div><b>@product.Name</b></div>
                         <div class="lead">@product.Price</div>
-                    </a>
+                        <div class="d-flex">
+                            <button class="btn btn-primary btn-block" @onclick="() => AddToOrder(product.Id)">Add to order</button>
+                        </div>
+                    </div>
                 </div>
             }
         </div>
@@ -65,6 +70,7 @@
     private string brand;
     private bool isBusy;
     private string order;
+    private string message;
 
     private List<ProductDto> products = new();
 
@@ -91,18 +97,44 @@
         StateHasChanged();
         this.search = search;
         this.brand = brand;
-        products = await ProductApi.GetAllAsync(search, brand);
-        await Task.Delay(1000); // para alcanzar a ver el texto de cargando
+        try
+        {
+            products = await ProductApi.GetAllAsync(search, brand);
+        }
+        catch (AccessTokenNotAvailableException ex)
+        {
+            ex.Redirect();
+        }
         isBusy = false;
         StateHasChanged();
     }
 
     async Task OrderProducts(ChangeEventArgs args)
     {
-        this.order = (string) args.Value;
+        this.order = (string)args.Value;
         isBusy = true;
-        products = await ProductApi.GetAllAsync(search, brand, order);
+        try
+        {
+            products = await ProductApi.GetAllAsync(search, brand, order);
+        }
+        catch (AccessTokenNotAvailableException ex)
+        {
+            ex.Redirect();
+        }
         isBusy = false;
+    }
+
+    async Task AddToOrder(int productId)
+    {
+        try
+        {
+            await OrderApi.AddProductToOrder(productId);
+            message = "Product added to your order";
+        }
+        catch (Exception ex)
+        {
+            message = ex.Message;
+        }
     }
 
     void IDisposable.Dispose()

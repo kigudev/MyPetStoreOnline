@@ -12,5 +12,8 @@ namespace MyPetStoreOnline.Entities
         [Required]
         [MaxLength(100)]
         public string LastName { get; set; }
+
+        public int? CustomerId { get; set; }
+        public Customer Customer { get; set; }
     }
 }

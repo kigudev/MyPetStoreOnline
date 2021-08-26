@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using MyPetStore.Client.Services.Implementations;
@@ -15,11 +16,16 @@ namespace MyPetStore.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddHttpClient("MyPetStore.Web", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
-            //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddHttpClient("MyPetStore.Web", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+                .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
 
+            //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddScoped(c => c.GetRequiredService<IHttpClientFactory>().CreateClient("MyPetStore.Web"));
+
+            builder.Services.AddApiAuthorization();
             builder.Services.AddScoped<IProductApi, ProductApi>();
             builder.Services.AddScoped<IBrandApi, BrandApi>();
+            builder.Services.AddScoped<IOrderApi, OrderApi>();
 
             await builder.Build().RunAsync();
         }

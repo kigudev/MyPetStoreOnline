@@ -36,6 +36,13 @@
 
     protected override async Task OnInitializedAsync()
     {
-        brands = await BrandApi.GetAllAsync();
+        try 
+        {
+            brands = await BrandApi.GetAllAsync();
+        }
+        catch (AccessTokenNotAvailableException ex)
+        {
+            ex.Redirect();
+        }
     }
 }
