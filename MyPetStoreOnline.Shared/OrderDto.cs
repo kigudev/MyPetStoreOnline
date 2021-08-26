@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using MyPetStore.Shared;
+using System.Collections.Generic;
 
-namespace MyPetStoreOnline.Models
+namespace MyPetStore.Shared
 {
     public class OrderDto
     {

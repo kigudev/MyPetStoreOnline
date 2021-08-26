@@ -19,5 +19,7 @@ namespace MyPetStore.Shared
         public DateTime CreatedAt { get; set; }
         [MaxLength(100)]
         public string ImageUrl { get; set; }
+        [Range(0, int.MaxValue)]
+        public int Quantity { get; set; }
     }
 }

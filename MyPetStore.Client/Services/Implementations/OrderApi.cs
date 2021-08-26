@@ -1,5 +1,6 @@
 ﻿using MyPetStore.Client.Services.Interfaces;
 using MyPetStore.Shared;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -24,5 +25,7 @@ namespace MyPetStore.Client.Services.Implementations
             };
             await _client.PostAsJsonAsync("api/orders", dto);
         }
+
+        public Task<List<OrderDto>> GetMyOrders() => _client.GetFromJsonAsync<List<OrderDto>>("api/orders/mine");
     }
 }

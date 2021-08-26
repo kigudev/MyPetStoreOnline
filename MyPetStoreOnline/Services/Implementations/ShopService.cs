@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MyPetStore.Shared;
 using MyPetStoreOnline.Data;
 using MyPetStoreOnline.Entities;
 using MyPetStoreOnline.Services.Abstractions;
@@ -134,9 +135,12 @@ namespace MyPetStoreOnline.Services.Implementations
                 .Include(c => c.ProductOrders)
                 .FirstOrDefaultAsync(c => c.CustomerId == customerId && !c.OrderFulfilled.HasValue);
 
+            var willBeAdded = false;
+
             if (order == null)
             {
                 order = new Order(customerId, productId, quantity);
+                willBeAdded = true;
             }
             else if(order.ProductOrders.Any(c => c.ProductId == productId))
             {
@@ -146,7 +150,13 @@ namespace MyPetStoreOnline.Services.Implementations
                 order.AddProduct(productId, quantity);
             }
 
-            await _context.SaveChangesAsync();
+            if (willBeAdded)
+                await _context.AddAsync(order);
+
+            var res = await _context.SaveChangesAsync();
+
+            if (res < 0)
+                throw new InvalidOperationException("No se guardó ningún dato");
         }
 
         public async Task CompleteOrderAsync(int customerId)
@@ -188,6 +198,28 @@ namespace MyPetStoreOnline.Services.Implementations
         public async Task<IEnumerable<ProductType>> GetProductTypesAsync()
         {
             return await _context.ProductTypes.ToListAsync();
+        }
+
+        public async Task<IEnumerable<OrderDto>> GetOrdersAsync(int customerId)
+        {
+            var orders = await _context.Orders
+                .Where(c => c.CustomerId == customerId)
+                .Select(c => new OrderDto
+                {
+                    Id = c.Id,
+                    Estatus = c.Status.ToString(),
+                    Total = c.ProductOrders.Sum(c => c.Quantity * c.Product.Price),
+                    Products = c.ProductOrders.Select(d => new ProductDto
+                    {
+                        Id = d.ProductId,
+                        Name = d.Product.Name,
+                        Quantity = d.Quantity,
+                        ImageUrl = d.Product.ImageUrl,
+                        Price = d.Product.Price
+                    })
+                }).ToListAsync();
+
+            return orders;
         }
     }
 }

@@ -34,6 +34,20 @@ namespace MyPetStore.Web.Api
         [HttpGet]
         public Task<IEnumerable<Order>> Get() => _shopService.GetOrdersAsync();
 
+
+        [HttpGet("mine")]
+        public async Task<ActionResult<IEnumerable<OrderDto>>> GetMine() {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (!user.CustomerId.HasValue)
+                return BadRequest("The customer doesn't exist");
+
+
+            var orders = await _shopService.GetOrdersAsync(user.CustomerId.Value);
+
+            return Ok(orders);
+        }
+
         /// <summary>
         /// Agrega un producto a una orden.
         /// Si la orden no existe la crea.

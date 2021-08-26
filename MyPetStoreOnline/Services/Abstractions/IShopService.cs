@@ -1,4 +1,5 @@
-﻿using MyPetStoreOnline.Entities;
+﻿using MyPetStore.Shared;
+using MyPetStoreOnline.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -18,6 +19,7 @@ namespace MyPetStoreOnline.Services.Abstractions
         Task<IEnumerable<Product>> GetProductsAsync();
         Task<IEnumerable<Customer>> GetCustomersAsync();
         Task<IEnumerable<Order>> GetOrdersAsync();
+        Task<IEnumerable<OrderDto>> GetOrdersAsync(int customerId);
         Task<Customer> GetCustomerAsync(int id);
         Task DeleteProductAsync(int productId);
         Task AddUpdateAddressAsync(int id, Address address);
